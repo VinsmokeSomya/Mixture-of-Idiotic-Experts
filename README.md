@@ -1,7 +1,7 @@
 <h1 align="center" id="top">Mixture of Idiotic Experts 🧠✍️🎭</h1>
 
 <p align="center">
-  <strong>Mixture of Idiotic Experts 🧠✍️🎭: Crafting Shakespeare with a Chorus of Experts. Building a Sparse Mixture of Experts language model from scratch, inspired by Andrej Karpathy's "Shakespeare's Synaptic Scribes"!</strong>
+  <strong>Mixture of Idiotic Experts 🧠✍️🎭: Crafting Shakespeare with a Chorus of Experts. Building a Sparse Mixture of Experts language model from scratch!</strong>
 </p>
 
 Welcome to **Mixture of Idiotic Experts**! This project is a journey into the world of autoregressive character-level language models, but with a twist: we're using a Sparse Mixture of Experts (MoE) architecture. The goal? To generate Shakespeare-like text, one character at a time, by learning from the Bard's own words.

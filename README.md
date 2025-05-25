@@ -17,6 +17,7 @@ This implementation is designed for clarity and hackability, making it a great p
     *   [🧙‍♂️ The Expert Ensemble: Specialized Language Wizards](#the-experts)
     *   [🔍 Causal Self-Attention: Remembering What's Been Said](#self-attention)
     *   [⚖️ Expert Capacity: Keeping Training Efficient](#expert-capacity)
+    *   [⚙️ Workflow Diagram](#workflow-diagram)
 4.  [🛠️ Tech Corner (Tech Stack)](#tech-stack)
 5.  [🚀 Let's Get Makin'! (Getting Started)](#getting-started)
     *   [1. Prerequisites](#prerequisites)
@@ -79,6 +80,79 @@ Borrowed from the "Shakespeare's Synaptic Scribes" architecture (and transformer
 
 <h3 id="expert-capacity">⚖️ Expert Capacity: Keeping Training Efficient</h3>
 A common challenge in MoE models is ensuring that experts are utilized effectively – not too overwhelmed, not too idle. "Expert Capacity" mechanisms are implemented to help distribute the workload more evenly among the experts during training, leading to better learning and resource utilization.
+
+<h3 id="workflow-diagram">⚙️ Workflow Diagram</h3>
+
+Here's a high-level ASCII diagram illustrating the data flow through the Mixture of Idiotic Experts model:
+
+```text
+                             [ Input Text ]
+                                   |
+                                   v
+                [ Token Embedding + Positional Embedding ]
+                                   |
+                                   v
+                --------------------------------------------------
+                |              FOR N_LAYER Blocks:               |
+                |                                                |
+                |                Input (x_block)                 |
+                |                      |                         |
+                |                      v                         |
+                |         norm1_out = LayerNorm(x_block)         |
+                |                      |                         |
+                |                      v                         |
+                |        +-----------------------------+         |
+                |        | Self-Attention (Multi-Head) |         |
+                |        | Input: norm1_out            |         |
+                |        | Output: sa_out              |         |
+                |        +-----------------------------+         |
+                |                      |                         |
+                |           x_block = x_block + sa_out           |
+                |                      |                         |
+                |                      v                         |
+                |         norm2_out = LayerNorm(x_block)         |
+                |                      |                         |
+                |                      v                         |
+                |      +-----------------------------------+     |
+                |      |     Sparse Mixture of Experts     |     |
+                |      |                                   |     |
+                |      |      [Router (Gating Network)]    |     |
+                |      |          Input: norm2_out         |     |
+                |      |                 |                 |     |
+                |      |      (Selects Top-K Experts)      |     |
+                |      |                 |                 |     |
+                |      |    +----->[Expert 1]<--------+    |     |
+                |      |    |      [Expert 2]         |    |     |
+                |      |    |      ...                |    |     |
+                |      |    +----->[Expert M_total]<--+    |     |
+                |      |                 | (Combine Top-K  |     |
+                |      |                 |  Expert Outputs |     |
+                |      |                 |  using Gating   |     |
+                |      |                 |  Scores)        |     |
+                |      |                 v                 |     |
+                |      |       [Weighted MoE Output]       |     |
+                |      |         Output: moe_out           |     |
+                |      +-----------------------------------+     |
+                |                      |                         |
+                |           x_block = x_block + moe_out          | 
+                |                                                |
+                --------------------------------------------------
+                                       | (x_block becomes input for 
+                                       | next layer or final output if last layer)
+                                       v
+                        [ Final Layer Normalization (ln_f) ] 
+                      (Applied to the output of the last block)
+                                       |
+                                       v
+                            [ Linear Layer (lm_head) ]      
+                           (Projects to Vocabulary Size)
+                                       |
+                                       v
+                                  [ Softmax ]
+                                       |
+                                       v
+                     [ Predicted Next Token Probabilities ]
+```
 
 <h2 id="tech-stack">🛠️ Tech Corner (Tech Stack)</h2>
 
